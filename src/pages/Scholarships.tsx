@@ -1,18 +1,25 @@
 import { useState, useMemo } from 'react';
-import { Search, Filter, Calendar, ExternalLink } from 'lucide-react';
+import { Search, Filter, Calendar, ExternalLink, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { scholarships, Scholarship } from '@/data/scholarships';
+import { useScholarships } from '@/hooks/useScholarships';
+import { Scholarship } from '@/data/scholarships';
 
 export default function Scholarships() {
   const { t, language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedField, setSelectedField] = useState('all');
   const [sortBy, setSortBy] = useState('deadline');
+
+  // Use the hook for scholarships data
+  // To connect Google Sheets, pass: { googleSheetUrl: 'YOUR_GOOGLE_SHEET_URL' }
+  // To connect Airtable, pass: { airtableConfig: { baseId: 'BASE_ID', tableId: 'TABLE_ID', apiKey: 'API_KEY' } }
+  const { scholarships, loading, error } = useScholarships();
 
   const fields = ['engineering', 'medicine', 'business', 'arts', 'science', 'technology', 'law', 'education'];
 
@@ -71,6 +78,13 @@ export default function Scholarships() {
           </p>
         </div>
 
+        {/* Error Alert */}
+        {error && (
+          <Alert className="mb-6 max-w-4xl mx-auto">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
         {/* Search and Filters */}
         <div className="max-w-4xl mx-auto mb-8 space-y-4">
           <div className="relative">
@@ -112,8 +126,12 @@ export default function Scholarships() {
           </div>
         </div>
 
-        {/* Scholarships Grid */}
-        {filteredAndSortedScholarships.length > 0 ? (
+        {/* Loading State */}
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : filteredAndSortedScholarships.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
             {filteredAndSortedScholarships.map((scholarship) => (
               <Card key={scholarship.id} className="flex flex-col hover:shadow-lg transition-shadow">
