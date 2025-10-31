@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Filter, Calendar, ExternalLink, Loader2 } from 'lucide-react';
+import { Search, Filter, Calendar, ExternalLink, Loader2, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useScholarships } from '@/hooks/useScholarships';
 import { Scholarship } from '@/data/scholarships';
+import { downloadScholarshipsAsCsv } from '@/utils/exportToCsv';
 
 export default function Scholarships() {
   const { t, language } = useLanguage();
@@ -20,11 +21,11 @@ export default function Scholarships() {
   // To connect Google Sheets, pass: { googleSheetUrl: 'YOUR_GOOGLE_SHEET_URL' }
   // To connect Airtable, pass: { airtableConfig: { baseId: 'BASE_ID', tableId: 'TABLE_ID', apiKey: 'API_KEY' } }
   const { scholarships, loading, error } = useScholarships({
-  googleSheetUrl: 'https://docs.google.com/spreadsheets/d/1Rbqr54bFO3kIr86YTtS_kkksmWLCZVbsh8jP8w7hQOw/edit?usp=sharing/gviz/tq?tqx=out:json'
-});
+    googleSheetUrl: 'https://docs.google.com/spreadsheets/d/1Rbqr54bFO3kIr86YTtS_kkksmWLCZVbsh8jP8w7hQOw/export?format=csv'
+  });
 
 
-  const fields = ['engineering', 'medicine', 'business', 'arts', 'science', 'technology', 'law', 'education'];
+  const fields = ['engineering', 'medicine', 'business', 'arts', 'science', 'technology', 'law', 'education', 'various'];
 
   const filteredAndSortedScholarships = useMemo(() => {
     let result = [...scholarships];
@@ -79,6 +80,16 @@ export default function Scholarships() {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             {t('home.subtitle')}
           </p>
+          <div className="flex justify-center mt-4">
+            <Button
+              variant="outline"
+              onClick={() => downloadScholarshipsAsCsv(scholarships, 'scholarships.csv')}
+              disabled={loading || scholarships.length === 0}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Export to CSV
+            </Button>
+          </div>
         </div>
 
         {/* Error Alert */}

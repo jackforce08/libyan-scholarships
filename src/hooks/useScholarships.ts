@@ -16,7 +16,11 @@ export function useScholarships(options?: UseScholarshipsOptions) {
   const [error, setError] = useState<string | null>(null);
 
   // --- CSV support helpers (for sheets published as CSV) ---
-  const isCsvUrl = (url: string) => /output=csv/i.test(url) || /\.csv$/i.test(url);
+  const isCsvUrl = (url: string) => 
+    /output=csv/i.test(url) || 
+    /format=csv/i.test(url) || 
+    /\/export/i.test(url) || 
+    /\.csv$/i.test(url);
 
   // Normalize header strings to simple keys
   const normalizeHeader = (h: string) => h.trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
@@ -76,43 +80,93 @@ export function useScholarships(options?: UseScholarshipsOptions) {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`Failed to fetch CSV: ${response.status}`);
+      // Ensure the URL has the proper CSV export format
+      let csvUrl = url;
+      if (!csvUrl.includes('format=csv') && !csvUrl.includes('output=csv')) {
+        // If it's a Google Sheets URL but not a CSV export, convert it
+        const sheetIdMatch = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+        if (sheetIdMatch && sheetIdMatch[1]) {
+          csvUrl = `https://docs.google.com/spreadsheets/d/${sheetIdMatch[1]}/export?format=csv`;
+        }
+      }
+
+      const response = await fetch(csvUrl, {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        headers: {
+          'Accept': 'text/csv',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch CSV: ${response.status} ${response.statusText}`);
+      }
+
       const text = await response.text();
+      
+      if (!text || text.trim().length === 0) {
+        throw new Error('CSV response is empty');
+      }
 
       const rows = parseCsvToRows(text);
-      if (rows.length === 0) throw new Error('CSV is empty');
+      if (rows.length === 0) {
+        throw new Error('CSV is empty after parsing');
+      }
+
+      if (rows.length === 1) {
+        throw new Error('CSV has headers but no data rows');
+      }
 
       const headers = rows[0].map((h) => normalizeHeader(h || ''));
-      const dataRows = rows.slice(1);
+      // Filter out completely empty data rows
+      const dataRows = rows.slice(1).filter((row) => {
+        return row.some((cell) => cell && cell.trim() !== '');
+      });
+
+      if (dataRows.length === 0) {
+        throw new Error('No valid data rows found in CSV');
+      }
 
       const transformed: Scholarship[] = dataRows.map((r, idx) => {
         const obj: Record<string, string> = {};
-        for (let i = 0; i < headers.length; i++) {
+        for (let i = 0; i < headers.length && i < r.length; i++) {
           obj[headers[i]] = (r[i] ?? '').trim();
         }
 
         // Helper to pick the first available header variant
         const pick = (variants: string[]) => {
-          for (const v of variants) if (obj[v] !== undefined && obj[v] !== '') return obj[v];
+          for (const v of variants) {
+            const value = obj[v];
+            if (value !== undefined && value !== null && value !== '') {
+              return value;
+            }
+          }
           return '';
         };
 
         return {
-          id: pick(['id', 'identifier']) || `csv-${idx + 1}`,
+          id: pick(['id', 'identifier', 'scholarship_id']) || `csv-${idx + 1}`,
           name: {
-            en: pick(['name_en', 'name_(en)', 'name_en', 'name']) || '',
-            ar: pick(['name_ar', 'name_(ar)', 'name_ar']) || ''
+            en: pick(['name_en', 'name_(en)', 'name_en', 'name', 'title_en', 'title']) || '',
+            ar: pick(['name_ar', 'name_(ar)', 'name_ar', 'title_ar']) || ''
           },
-          field: (pick(['field', 'category', 'discipline']) || 'general').toLowerCase(),
-          deadline: pick(['deadline', 'due_date', 'due_date']) || '',
-          applyUrl: pick(['apply_url', 'applyurl', 'apply', 'url', 'link']) || '',
+          field: (pick(['field', 'category', 'discipline', 'subject', 'area']) || 'general').toLowerCase(),
+          deadline: pick(['deadline', 'due_date', 'due_date', 'application_deadline', 'closing_date']) || '',
+          applyUrl: pick(['apply_url', 'applyurl', 'apply', 'url', 'link', 'application_url', 'apply_link']) || '',
           description: {
-            en: pick(['description_en', 'description_(en)', 'description_en', 'description']) || '',
-            ar: pick(['description_ar', 'description_(ar)', 'description_ar']) || ''
+            en: pick(['description_en', 'description_(en)', 'description_en', 'description', 'desc_en']) || '',
+            ar: pick(['description_ar', 'description_(ar)', 'description_ar', 'desc_ar']) || ''
           }
         } as Scholarship;
+      }).filter((scholarship) => {
+        // Filter out scholarships with no name in either language
+        return scholarship.name.en || scholarship.name.ar;
       });
+
+      if (transformed.length === 0) {
+        throw new Error('No valid scholarships found after parsing CSV');
+      }
 
       setScholarships(transformed);
     } catch (err: any) {
@@ -198,8 +252,12 @@ export function useScholarships(options?: UseScholarshipsOptions) {
 
   // Try to convert different Google Sheets sharing/edit URLs into the
   // public gviz/tq JSON endpoint that this hook expects.
+  // For CSV export URLs, preserve them as-is.
   function normalizeGoogleSheetUrl(rawUrl: string) {
     try {
+      // If it's a CSV export URL, preserve it as-is (don't convert to JSON)
+      if (isCsvUrl(rawUrl)) return rawUrl;
+
       // If it's already the gviz endpoint, return it
       if (/\/gviz\/tq/i.test(rawUrl)) return rawUrl;
 
