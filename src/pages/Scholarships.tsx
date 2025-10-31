@@ -19,7 +19,10 @@ export default function Scholarships() {
   // Use the hook for scholarships data
   // To connect Google Sheets, pass: { googleSheetUrl: 'YOUR_GOOGLE_SHEET_URL' }
   // To connect Airtable, pass: { airtableConfig: { baseId: 'BASE_ID', tableId: 'TABLE_ID', apiKey: 'API_KEY' } }
-  const { scholarships, loading, error } = useScholarships();
+  const { scholarships, loading, error } = useScholarships({
+  googleSheetUrl: 'https://docs.google.com/spreadsheets/d/1Rbqr54bFO3kIr86YTtS_kkksmWLCZVbsh8jP8w7hQOw/edit?usp=sharing/gviz/tq?tqx=out:json'
+});
+
 
   const fields = ['engineering', 'medicine', 'business', 'arts', 'science', 'technology', 'law', 'education'];
 
