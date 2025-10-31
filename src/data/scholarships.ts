@@ -21,7 +21,7 @@ export const scholarships: Scholarship[] = [
       en: 'Chevening Scholarships - UK',
       ar: 'منحة تشيفنينج - المملكة المتحدة'
     },
-    field: 'engineering',
+    field: 'various',
     deadline: '2025-11-02',
     applyUrl: 'https://www.chevening.org/apply',
     description: {
@@ -35,7 +35,7 @@ export const scholarships: Scholarship[] = [
       en: 'Fulbright Foreign Student Program',
       ar: 'برنامج فولبرايت للطلاب الأجانب'
     },
-    field: 'science',
+    field: 'various',
     deadline: '2025-10-15',
     applyUrl: 'https://foreign.fulbrightonline.org',
     description: {
@@ -49,7 +49,7 @@ export const scholarships: Scholarship[] = [
       en: 'DAAD Scholarships - Germany',
       ar: 'منحة DAAD - ألمانيا'
     },
-    field: 'technology',
+    field: 'various',
     deadline: '2025-09-30',
     applyUrl: 'https://www.daad.de/en',
     description: {
@@ -63,7 +63,7 @@ export const scholarships: Scholarship[] = [
       en: 'Erasmus Mundus Joint Masters',
       ar: 'إيراسموس موندوس للماجستير المشترك'
     },
-    field: 'business',
+    field: 'various',
     deadline: '2025-12-01',
     applyUrl: 'https://www.eacea.ec.europa.eu/scholarships',
     description: {
@@ -77,7 +77,7 @@ export const scholarships: Scholarship[] = [
       en: 'Turkey Government Scholarships',
       ar: 'منح الحكومة التركية'
     },
-    field: 'medicine',
+    field: 'various',
     deadline: '2025-10-20',
     applyUrl: 'https://www.turkiyeburslari.gov.tr',
     description: {
@@ -91,7 +91,7 @@ export const scholarships: Scholarship[] = [
       en: 'Commonwealth Scholarships',
       ar: 'منح الكومنولث'
     },
-    field: 'education',
+    field: 'various',
     deadline: '2025-11-15',
     applyUrl: 'https://cscuk.fcdo.gov.uk',
     description: {
@@ -105,7 +105,7 @@ export const scholarships: Scholarship[] = [
       en: 'Australian Awards Scholarships',
       ar: 'منح الجوائز الأسترالية'
     },
-    field: 'arts',
+    field: 'various',
     deadline: '2025-10-30',
     applyUrl: 'https://www.dfat.gov.au/people-to-people/australia-awards',
     description: {
@@ -119,7 +119,7 @@ export const scholarships: Scholarship[] = [
       en: 'Chinese Government Scholarships',
       ar: 'منح الحكومة الصينية'
     },
-    field: 'technology',
+    field: 'various',
     deadline: '2025-09-15',
     applyUrl: 'https://www.campuschina.org',
     description: {
@@ -133,7 +133,7 @@ export const scholarships: Scholarship[] = [
       en: 'Gates Cambridge Scholarships',
       ar: 'منح غيتس كامبريدج'
     },
-    field: 'science',
+    field: 'various',
     deadline: '2025-12-05',
     applyUrl: 'https://www.gatescambridge.org',
     description: {
@@ -147,7 +147,7 @@ export const scholarships: Scholarship[] = [
       en: 'Rhodes Scholarships - Oxford',
       ar: 'منحة رودس - أكسفورد'
     },
-    field: 'law',
+    field: 'various',
     deadline: '2025-10-01',
     applyUrl: 'https://www.rhodeshouse.ox.ac.uk',
     description: {
@@ -161,7 +161,7 @@ export const scholarships: Scholarship[] = [
       en: 'Swedish Institute Scholarships',
       ar: 'منح المعهد السويدي'
     },
-    field: 'engineering',
+    field: 'various',
     deadline: '2025-11-20',
     applyUrl: 'https://si.se/en/apply/scholarships',
     description: {
@@ -175,7 +175,7 @@ export const scholarships: Scholarship[] = [
       en: 'Netherlands Fellowship Programmes',
       ar: 'برامج الزمالة الهولندية'
     },
-    field: 'business',
+    field: 'various',
     deadline: '2025-09-20',
     applyUrl: 'https://www.nuffic.nl/en/subjects/scholarships',
     description: {
@@ -189,7 +189,7 @@ export const scholarships: Scholarship[] = [
       en: 'Japan MEXT Scholarships',
       ar: 'منح MEXT اليابانية'
     },
-    field: 'technology',
+    field: 'various',
     deadline: '2025-10-10',
     applyUrl: 'https://www.studyinjapan.go.jp',
     description: {
@@ -203,7 +203,7 @@ export const scholarships: Scholarship[] = [
       en: 'Korean Government Scholarship Program',
       ar: 'برنامج منح الحكومة الكورية'
     },
-    field: 'engineering',
+    field: 'various',
     deadline: '2025-11-30',
     applyUrl: 'https://www.studyinkorea.go.kr',
     description: {
@@ -217,7 +217,7 @@ export const scholarships: Scholarship[] = [
       en: 'Swiss Government Excellence Scholarships',
       ar: 'منح التميز الحكومية السويسرية'
     },
-    field: 'science',
+    field: 'various',
     deadline: '2025-12-15',
     applyUrl: 'https://www.sbfi.admin.ch/scholarships',
     description: {
@@ -231,7 +231,7 @@ export const scholarships: Scholarship[] = [
       en: 'Canada Vanier Scholarships',
       ar: 'منح فانييه الكندية'
     },
-    field: 'medicine',
+    field: 'various',
     deadline: '2025-11-01',
     applyUrl: 'https://vanier.gc.ca',
     description: {
@@ -245,7 +245,7 @@ export const scholarships: Scholarship[] = [
       en: 'New Zealand Development Scholarships',
       ar: 'منح التنمية النيوزيلندية'
     },
-    field: 'education',
+    field: 'various',
     deadline: '2025-10-25',
     applyUrl: 'https://www.mfat.govt.nz/scholarships',
     description: {
@@ -259,7 +259,7 @@ export const scholarships: Scholarship[] = [
       en: 'Belgium Development Cooperation',
       ar: 'التعاون الإنمائي البلجيكي'
     },
-    field: 'arts',
+    field: 'various',
     deadline: '2025-09-28',
     applyUrl: 'https://www.vliruos.be',
     description: {
@@ -273,7 +273,7 @@ export const scholarships: Scholarship[] = [
       en: 'Ireland Government Scholarships',
       ar: 'منح الحكومة الأيرلندية'
     },
-    field: 'law',
+    field: 'various',
     deadline: '2025-11-10',
     applyUrl: 'https://www.educationinireland.com',
     description: {
@@ -287,7 +287,7 @@ export const scholarships: Scholarship[] = [
       en: 'Singapore International Graduate Award',
       ar: 'جائزة سنغافورة الدولية للدراسات العليا'
     },
-    field: 'science',
+    field: 'various',
     deadline: '2025-12-10',
     applyUrl: 'https://www.a-star.edu.sg/Scholarships',
     description: {
@@ -301,7 +301,7 @@ export const scholarships: Scholarship[] = [
       en: 'ADB-Japan Scholarship Program',
       ar: 'برنامج منح البنك الآسيوي للتنمية - اليابان'
     },
-    field: 'business',
+    field: 'various',
     deadline: '2025-10-05',
     applyUrl: 'https://www.adb.org/work-with-us/careers/japan-scholarship-program',
     description: {
@@ -315,7 +315,7 @@ export const scholarships: Scholarship[] = [
       en: 'World Bank Scholarships Program',
       ar: 'برنامج منح البنك الدولي'
     },
-    field: 'business',
+    field: 'various',
     deadline: '2025-11-25',
     applyUrl: 'https://www.worldbank.org/en/programs/scholarships',
     description: {
@@ -329,7 +329,7 @@ export const scholarships: Scholarship[] = [
       en: 'UN Women Peace and Security Scholarship',
       ar: 'منحة الأمم المتحدة للمرأة والسلام والأمن'
     },
-    field: 'education',
+    field: 'various',
     deadline: '2025-09-18',
     applyUrl: 'https://www.unwomen.org',
     description: {
@@ -343,7 +343,7 @@ export const scholarships: Scholarship[] = [
       en: 'Orange Knowledge Programme',
       ar: 'برنامج المعرفة البرتقالية'
     },
-    field: 'technology',
+    field: 'various',
     deadline: '2025-10-12',
     applyUrl: 'https://www.nuffic.nl/en/subjects/orange-knowledge-programme',
     description: {
@@ -357,7 +357,7 @@ export const scholarships: Scholarship[] = [
       en: 'Eiffel Excellence Scholarship - France',
       ar: 'منحة إيفل للتميز - فرنسا'
     },
-    field: 'engineering',
+    field: 'various',
     deadline: '2025-12-20',
     applyUrl: 'https://www.campusfrance.org/en/eiffel-scholarship-program-of-excellence',
     description: {
@@ -371,7 +371,7 @@ export const scholarships: Scholarship[] = [
       en: 'Italian Government Scholarships',
       ar: 'منح الحكومة الإيطالية'
     },
-    field: 'arts',
+    field: 'various',
     deadline: '2025-11-05',
     applyUrl: 'https://studyinitaly.esteri.it',
     description: {
@@ -385,7 +385,7 @@ export const scholarships: Scholarship[] = [
       en: 'Spain MAEC-AECID Scholarships',
       ar: 'منح إسبانيا MAEC-AECID'
     },
-    field: 'education',
+    field: 'various',
     deadline: '2025-10-08',
     applyUrl: 'https://www.aecid.es',
     description: {
@@ -399,7 +399,7 @@ export const scholarships: Scholarship[] = [
       en: 'Austrian Government Scholarships',
       ar: 'منح الحكومة النمساوية'
     },
-    field: 'medicine',
+    field: 'various',
     deadline: '2025-11-18',
     applyUrl: 'https://oead.at/en/to-austria/scholarships',
     description: {
@@ -413,7 +413,7 @@ export const scholarships: Scholarship[] = [
       en: 'Norway Quota Scheme Scholarships',
       ar: 'منح برنامج الحصص النرويجي'
     },
-    field: 'science',
+    field: 'various',
     deadline: '2025-12-08',
     applyUrl: 'https://www.uio.no/english/studies/admission/quota-scheme',
     description: {
@@ -427,7 +427,7 @@ export const scholarships: Scholarship[] = [
       en: 'Finland CIMO Fellowships',
       ar: 'زمالات CIMO الفنلندية'
     },
-    field: 'technology',
+    field: 'various',
     deadline: '2025-09-22',
     applyUrl: 'https://www.oph.fi/en/services/cimo-fellowships',
     description: {
@@ -441,7 +441,7 @@ export const scholarships: Scholarship[] = [
       en: 'Denmark Technical Scholarships',
       ar: 'منح الدنمارك التقنية'
     },
-    field: 'engineering',
+    field: 'various',
     deadline: '2025-11-12',
     applyUrl: 'https://www.dtu.dk/english/education/tuition-fees-and-scholarships',
     description: {
@@ -455,7 +455,7 @@ export const scholarships: Scholarship[] = [
       en: 'Czech Government Scholarships',
       ar: 'منح الحكومة التشيكية'
     },
-    field: 'arts',
+    field: 'various',
     deadline: '2025-10-18',
     applyUrl: 'https://www.studyin.cz',
     description: {
@@ -469,7 +469,7 @@ export const scholarships: Scholarship[] = [
       en: 'Poland Solidarity Scholarships',
       ar: 'منح التضامن البولندية'
     },
-    field: 'education',
+    field: 'various',
     deadline: '2025-11-22',
     applyUrl: 'https://www.nawa.gov.pl',
     description: {
@@ -483,7 +483,7 @@ export const scholarships: Scholarship[] = [
       en: 'Hungary Stipendium Hungaricum',
       ar: 'منحة المجر Stipendium Hungaricum'
     },
-    field: 'law',
+    field: 'various',
     deadline: '2025-12-18',
     applyUrl: 'https://stipendiumhungaricum.hu',
     description: {
@@ -497,7 +497,7 @@ export const scholarships: Scholarship[] = [
       en: 'Romania Government Scholarships',
       ar: 'منح الحكومة الرومانية'
     },
-    field: 'medicine',
+    field: 'various',
     deadline: '2025-10-14',
     applyUrl: 'https://www.mae.ro/en/node/10251',
     description: {
@@ -511,7 +511,7 @@ export const scholarships: Scholarship[] = [
       en: 'Russia Government Scholarships',
       ar: 'منح الحكومة الروسية'
     },
-    field: 'science',
+    field: 'various',
     deadline: '2025-11-28',
     applyUrl: 'https://education-in-russia.com',
     description: {
@@ -525,7 +525,7 @@ export const scholarships: Scholarship[] = [
       en: 'UAE Government Scholarships',
       ar: 'منح حكومة الإمارات'
     },
-    field: 'business',
+    field: 'various',
     deadline: '2025-09-25',
     applyUrl: 'https://www.government.ae/en/information-and-services/education/higher-education-scholarships',
     description: {
@@ -539,7 +539,7 @@ export const scholarships: Scholarship[] = [
       en: 'Saudi Arabia King Abdullah Scholarship',
       ar: 'منحة الملك عبدالله - السعودية'
     },
-    field: 'technology',
+    field: 'various',
     deadline: '2025-10-22',
     applyUrl: 'https://www.sacm.org',
     description: {
@@ -553,7 +553,7 @@ export const scholarships: Scholarship[] = [
       en: 'Egypt Al-Azhar Scholarships',
       ar: 'منح الأزهر - مصر'
     },
-    field: 'education',
+    field: 'various',
     deadline: '2025-11-08',
     applyUrl: 'https://www.azhar.edu.eg',
     description: {
@@ -567,7 +567,7 @@ export const scholarships: Scholarship[] = [
       en: 'Jordan University Scholarships',
       ar: 'منح الجامعات الأردنية'
     },
-    field: 'arts',
+    field: 'various',
     deadline: '2025-12-12',
     applyUrl: 'https://www.mohe.gov.jo',
     description: {
@@ -581,7 +581,7 @@ export const scholarships: Scholarship[] = [
       en: 'Morocco Government Scholarships',
       ar: 'منح الحكومة المغربية'
     },
-    field: 'law',
+    field: 'various',
     deadline: '2025-10-28',
     applyUrl: 'https://www.enssup.gov.ma',
     description: {
@@ -595,7 +595,7 @@ export const scholarships: Scholarship[] = [
       en: 'Tunisia Excellence Scholarships',
       ar: 'منح التميز التونسية'
     },
-    field: 'engineering',
+    field: 'various',
     deadline: '2025-11-16',
     applyUrl: 'https://www.mes.tn',
     description: {
@@ -609,7 +609,7 @@ export const scholarships: Scholarship[] = [
       en: 'Algeria University Grants',
       ar: 'منح الجامعات الجزائرية'
     },
-    field: 'science',
+    field: 'various',
     deadline: '2025-09-30',
     applyUrl: 'https://www.mesrs.dz',
     description: {
@@ -623,7 +623,7 @@ export const scholarships: Scholarship[] = [
       en: 'Malaysia International Scholarships',
       ar: 'المنح الدولية الماليزية'
     },
-    field: 'technology',
+    field: 'various',
     deadline: '2025-10-16',
     applyUrl: 'https://www.studymalaysia.com',
     description: {
@@ -637,7 +637,7 @@ export const scholarships: Scholarship[] = [
       en: 'Thailand Government Scholarships',
       ar: 'منح الحكومة التايلاندية'
     },
-    field: 'medicine',
+    field: 'various',
     deadline: '2025-11-26',
     applyUrl: 'https://www.mua.go.th',
     description: {
@@ -651,7 +651,7 @@ export const scholarships: Scholarship[] = [
       en: 'Indonesia Darmasiswa Scholarships',
       ar: 'منح إندونيسيا Darmasiswa'
     },
-    field: 'arts',
+    field: 'various',
     deadline: '2025-12-22',
     applyUrl: 'https://darmasiswa.kemdikbud.go.id',
     description: {
@@ -665,7 +665,7 @@ export const scholarships: Scholarship[] = [
       en: 'Vietnam Government Scholarships',
       ar: 'منح الحكومة الفيتنامية'
     },
-    field: 'business',
+    field: 'various',
     deadline: '2025-10-20',
     applyUrl: 'https://www.moet.gov.vn',
     description: {
@@ -679,7 +679,7 @@ export const scholarships: Scholarship[] = [
       en: 'India ICCR Scholarships',
       ar: 'منح ICCR الهندية'
     },
-    field: 'education',
+    field: 'various',
     deadline: '2025-11-14',
     applyUrl: 'https://www.iccr.gov.in',
     description: {
@@ -693,7 +693,7 @@ export const scholarships: Scholarship[] = [
       en: 'Pakistan HEC Scholarships',
       ar: 'منح لجنة التعليم العالي الباكستانية'
     },
-    field: 'science',
+    field: 'various',
     deadline: '2025-09-12',
     applyUrl: 'https://www.hec.gov.pk',
     description: {
@@ -707,7 +707,7 @@ export const scholarships: Scholarship[] = [
       en: 'Bangladesh Commonwealth Scholarships',
       ar: 'منح الكومنولث - بنغلاديش'
     },
-    field: 'law',
+    field: 'various',
     deadline: '2025-10-26',
     applyUrl: 'https://www.ugc.gov.bd',
     description: {
