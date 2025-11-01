@@ -185,7 +185,25 @@ export function useScholarships(options?: UseScholarshipsOptions) {
           },
           field: (pick(['field', 'category', 'discipline', 'subject', 'area']) || 'general').toLowerCase(),
           degreeLevel: normalizedDegreeLevel,
-          destination: pick(['destination', 'country', 'location', 'destination_country', 'study_destination', 'where'])?.trim(),
+          // Get destination in both languages
+          destination: (() => {
+            const destEn = pick(['destination_en', 'destinationen'])?.trim();
+            const destAr = pick(['destination_ar', 'destinationar'])?.trim();
+            // Fallback to generic destination column if language-specific ones don't exist
+            const destGeneric = pick(['destination', 'country', 'location', 'destination_country', 'study_destination', 'where'])?.trim();
+            
+            const destEnValue = destEn || destGeneric || '';
+            const destArValue = destAr || destGeneric || '';
+            
+            // Only return destination object if at least one value exists
+            if (destEnValue || destArValue) {
+              return {
+                en: destEnValue,
+                ar: destArValue
+              };
+            }
+            return undefined;
+          })(),
           deadline: pick(['deadline', 'due_date', 'due_date', 'application_deadline', 'closing_date']) || '',
           applyUrl: pick(['apply_url', 'applyurl', 'apply', 'url', 'link', 'application_url', 'apply_link']) || '',
           description: {
@@ -257,9 +275,11 @@ export function useScholarships(options?: UseScholarshipsOptions) {
       const rows = data.table.rows;
 
       // Transform Google Sheets data to Scholarship format
-      // Expected columns: ID, Name (EN), Name (AR), Field, Degree Level, Destination, Deadline, Apply URL, Description (EN), Description (AR)
+      // Expected columns: ID, Name (EN), Name (AR), Field, Degree Level, Destination (EN), Destination (AR), Deadline, Apply URL, Description (EN), Description (AR)
       const transformed: Scholarship[] = rows.map((row: any, idx: number) => {
         const degreeLevelValue = row.c[4]?.v;
+        const destEn = row.c[5]?.v?.toString().trim();
+        const destAr = row.c[6]?.v?.toString().trim();
         return {
           id: row.c[0]?.v?.toString() || `gs-${idx + 1}`,
           name: {
@@ -268,12 +288,15 @@ export function useScholarships(options?: UseScholarshipsOptions) {
           },
           field: (row.c[3]?.v || 'general').toLowerCase(),
           degreeLevel: degreeLevelValue ? degreeLevelValue.toString().toLowerCase().trim() : undefined,
-          destination: row.c[5]?.v?.toString().trim() || undefined,
-          deadline: row.c[6]?.v || '',
-          applyUrl: row.c[7]?.v || '',
+          destination: (destEn || destAr) ? {
+            en: destEn || destAr || '',
+            ar: destAr || destEn || ''
+          } : undefined,
+          deadline: row.c[7]?.v || '',
+          applyUrl: row.c[8]?.v || '',
           description: {
-            en: row.c[8]?.v || '',
-            ar: row.c[9]?.v || ''
+            en: row.c[9]?.v || '',
+            ar: row.c[10]?.v || ''
           }
         };
       });
@@ -331,10 +354,14 @@ export function useScholarships(options?: UseScholarshipsOptions) {
       const data = await response.json();
       
       // Transform Airtable data to Scholarship format
-      // Expected fields: ID, NameEN, NameAR, Field, DegreeLevel, Destination, Deadline, ApplyURL, DescriptionEN, DescriptionAR
+      // Expected fields: ID, NameEN, NameAR, Field, DegreeLevel, DestinationEN, DestinationAR, Deadline, ApplyURL, DescriptionEN, DescriptionAR
       const transformed: Scholarship[] = data.records.map((record: any) => {
         const degreeLevelValue = record.fields.DegreeLevel || record.fields.Degree_Level || record.fields.Level;
-        const destinationValue = record.fields.Destination || record.fields.Country || record.fields.Location;
+        const destEn = record.fields.DestinationEN || record.fields.Destination_EN;
+        const destAr = record.fields.DestinationAR || record.fields.Destination_AR;
+        const destGeneric = record.fields.Destination || record.fields.Country || record.fields.Location;
+        const destEnValue = destEn ? destEn.toString().trim() : (destGeneric ? destGeneric.toString().trim() : '');
+        const destArValue = destAr ? destAr.toString().trim() : (destGeneric ? destGeneric.toString().trim() : '');
         return {
           id: record.id,
           name: {
@@ -343,7 +370,10 @@ export function useScholarships(options?: UseScholarshipsOptions) {
           },
           field: (record.fields.Field || 'general').toLowerCase(),
           degreeLevel: degreeLevelValue ? degreeLevelValue.toString().toLowerCase().trim() : undefined,
-          destination: destinationValue ? destinationValue.toString().trim() : undefined,
+          destination: (destEnValue || destArValue) ? {
+            en: destEnValue,
+            ar: destArValue
+          } : undefined,
           deadline: record.fields.Deadline || '',
           applyUrl: record.fields.ApplyURL || '',
           description: {

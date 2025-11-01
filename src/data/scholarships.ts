@@ -6,7 +6,10 @@ export interface Scholarship {
   };
   field: string;
   degreeLevel?: string;
-  destination?: string;
+  destination?: {
+    en: string;
+    ar: string;
+  };
   deadline: string;
   applyUrl: string;
   description: {

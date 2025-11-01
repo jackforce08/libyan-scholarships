@@ -17,8 +17,6 @@ export default function Scholarships() {
   const [selectedDestination, setSelectedDestination] = useState('all');
   const [sortBy, setSortBy] = useState('deadline');
 
-  const degreeLevels = ['bachelor', 'masters', 'phd', 'research', 'conference', 'internship', 'fellowship', 'program'];
-
   // Use the hook for scholarships data
   // To connect Google Sheets, pass: { googleSheetUrl: 'YOUR_GOOGLE_SHEET_URL' }
   // To connect Airtable, pass: { airtableConfig: { baseId: 'BASE_ID', tableId: 'TABLE_ID', apiKey: 'API_KEY' } }
@@ -26,47 +24,153 @@ export default function Scholarships() {
     googleSheetUrl: 'https://docs.google.com/spreadsheets/d/1Rbqr54bFO3kIr86YTtS_kkksmWLCZVbsh8jP8w7hQOw/export?format=csv'
   });
 
+  // Helper function to split by both English and Arabic commas
+  const splitByCommas = (text: string): string[] => {
+    // Split by both English comma (,) and Arabic comma (،)
+    return text.split(/[,،]/).map(d => d.trim()).filter(d => d !== '');
+  };
+
   // Get unique destinations from scholarships data
+  // Split comma-separated destinations (e.g., "Egypt, Lebanon" -> ["Egypt", "Lebanon"])
+  // Show destinations in current language, but also include from other language if current language not available
   const uniqueDestinations = useMemo(() => {
-    const destinations = scholarships
-      .map(s => s.destination)
-      .filter((d): d is string => !!d && d.trim() !== '')
-      .map(d => d.trim());
-    return Array.from(new Set(destinations)).sort();
+    const allDestinations: string[] = [];
+    
+    scholarships.forEach(s => {
+      if (s.destination) {
+        // Prioritize destination in current language
+        const destValue = s.destination[language] || s.destination.en || s.destination.ar || '';
+        if (destValue.trim() !== '') {
+          // Split by both English and Arabic commas
+          const splitDestinations = splitByCommas(destValue);
+          allDestinations.push(...splitDestinations);
+        }
+      }
+    });
+    
+    // Remove duplicates and sort
+    return Array.from(new Set(allDestinations)).sort();
+  }, [scholarships, language]);
+
+  // Get unique fields from scholarships data
+  // Split comma-separated fields (e.g., "engineering, medicine" -> ["engineering", "medicine"])
+  const uniqueFields = useMemo(() => {
+    const allFields: string[] = [];
+    
+    scholarships.forEach(s => {
+      if (s.field && s.field.trim() !== '') {
+        // Split by both English and Arabic commas
+        const splitFields = splitByCommas(s.field)
+          .map(f => f.toLowerCase());
+        
+        allFields.push(...splitFields);
+      }
+    });
+    
+    // Remove duplicates and sort, with fallback to hardcoded list
+    const defaultFields = ['engineering', 'medicine', 'business', 'arts', 'science', 'technology', 'law', 'education', 'various'];
+    const extractedFields = Array.from(new Set(allFields));
+    // Merge with defaults to ensure all default fields are available
+    const merged = Array.from(new Set([...defaultFields, ...extractedFields])).sort();
+    return merged;
   }, [scholarships]);
 
-
-  const fields = ['engineering', 'medicine', 'business', 'arts', 'science', 'technology', 'law', 'education', 'various'];
+  // Get unique degree levels from scholarships data
+  // Split comma-separated degree levels (e.g., "bachelor, masters" -> ["bachelor", "masters"])
+  const uniqueDegreeLevels = useMemo(() => {
+    const allDegreeLevels: string[] = [];
+    
+    scholarships.forEach(s => {
+      if (s.degreeLevel && s.degreeLevel.trim() !== '') {
+        // Split by both English and Arabic commas
+        const splitDegreeLevels = splitByCommas(s.degreeLevel)
+          .map(dl => dl.toLowerCase());
+        
+        allDegreeLevels.push(...splitDegreeLevels);
+      }
+    });
+    
+    // Remove duplicates and sort, with fallback to hardcoded list
+    const defaultDegreeLevels = ['bachelor', 'masters', 'phd', 'research', 'conference', 'internship', 'fellowship', 'program'];
+    const extractedDegreeLevels = Array.from(new Set(allDegreeLevels));
+    // Merge with defaults to ensure all default degree levels are available
+    const merged = Array.from(new Set([...defaultDegreeLevels, ...extractedDegreeLevels])).sort();
+    return merged;
+  }, [scholarships]);
 
   const filteredAndSortedScholarships = useMemo(() => {
     let result = [...scholarships];
 
-    // Filter by search query
+    // Filter by search query - search in both English and Arabic regardless of current language
     if (searchQuery) {
-      result = result.filter((scholarship) =>
-        scholarship.name[language].toLowerCase().includes(searchQuery.toLowerCase()) ||
-        scholarship.description[language].toLowerCase().includes(searchQuery.toLowerCase()) ||
-        t(`field.${scholarship.field}`).toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      result = result.filter((scholarship) => {
+        const query = searchQuery.toLowerCase();
+        // Check name in both languages
+        if (scholarship.name.en.toLowerCase().includes(query) ||
+            scholarship.name.ar.toLowerCase().includes(query)) {
+          return true;
+        }
+        // Check description in both languages
+        if (scholarship.description.en.toLowerCase().includes(query) ||
+            scholarship.description.ar.toLowerCase().includes(query)) {
+          return true;
+        }
+        // Check destination in both languages
+        if (scholarship.destination) {
+          const destEn = scholarship.destination.en?.toLowerCase() || '';
+          const destAr = scholarship.destination.ar?.toLowerCase() || '';
+          // Split and check individual destinations
+          const destEnParts = splitByCommas(destEn);
+          const destArParts = splitByCommas(destAr);
+          if (destEnParts.some(d => d.includes(query)) || destArParts.some(d => d.includes(query))) {
+            return true;
+          }
+        }
+        // Check if any field matches (field values themselves)
+        if (scholarship.field) {
+          const fields = splitByCommas(scholarship.field).map(f => f.toLowerCase());
+          if (fields.some(f => f.includes(query))) {
+            return true;
+          }
+        }
+        return false;
+      });
     }
 
     // Filter by field
+    // Check if any of the comma-separated fields match the selected field
     if (selectedField !== 'all') {
-      result = result.filter((scholarship) => scholarship.field === selectedField);
+      result = result.filter((scholarship) => {
+        if (!scholarship.field) return false;
+        const fields = splitByCommas(scholarship.field)
+          .map(f => f.toLowerCase());
+        return fields.includes(selectedField.toLowerCase());
+      });
     }
 
     // Filter by degree level
+    // Check if any of the comma-separated degree levels match the selected degree level
     if (selectedDegreeLevel !== 'all') {
-      result = result.filter((scholarship) => 
-        scholarship.degreeLevel?.toLowerCase() === selectedDegreeLevel.toLowerCase()
-      );
+      result = result.filter((scholarship) => {
+        if (!scholarship.degreeLevel) return false;
+        const degreeLevels = splitByCommas(scholarship.degreeLevel)
+          .map(dl => dl.toLowerCase());
+        return degreeLevels.includes(selectedDegreeLevel.toLowerCase());
+      });
     }
 
     // Filter by destination
+    // Check if any of the comma-separated destinations match the selected destination
+    // Use destination in current language
     if (selectedDestination !== 'all') {
-      result = result.filter((scholarship) => 
-        scholarship.destination?.trim().toLowerCase() === selectedDestination.toLowerCase()
-      );
+      result = result.filter((scholarship) => {
+        if (!scholarship.destination) return false;
+        const destValue = scholarship.destination[language] || scholarship.destination.en || scholarship.destination.ar || '';
+        if (!destValue) return false;
+        const destinations = splitByCommas(destValue)
+          .map(d => d.toLowerCase());
+        return destinations.includes(selectedDestination.toLowerCase());
+      });
     }
 
     // Sort
@@ -74,8 +178,17 @@ export default function Scholarships() {
       if (sortBy === 'deadline') {
         return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
       } else if (sortBy === 'destination') {
-        const destA = a.destination?.trim().toLowerCase() || '';
-        const destB = b.destination?.trim().toLowerCase() || '';
+        // Get first destination for sorting (or empty string if none)
+        // Use destination in current language
+        const getFirstDestination = (dest: { en: string; ar: string } | undefined) => {
+          if (!dest) return '';
+          const destValue = dest[language] || dest.en || dest.ar || '';
+          const split = splitByCommas(destValue);
+          const first = split[0]?.toLowerCase() || '';
+          return first;
+        };
+        const destA = getFirstDestination(a.destination);
+        const destB = getFirstDestination(b.destination);
         return destA.localeCompare(destB);
       } else {
         return a.name[language].localeCompare(b.name[language]);
@@ -139,7 +252,7 @@ export default function Scholarships() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('scholarships.all')}</SelectItem>
-                {fields.map((field) => (
+                {uniqueFields.map((field) => (
                   <SelectItem key={field} value={field}>
                     {t(`field.${field}`)}
                   </SelectItem>
@@ -154,7 +267,7 @@ export default function Scholarships() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('scholarships.allDegreeLevels')}</SelectItem>
-                {degreeLevels.map((level) => (
+                {uniqueDegreeLevels.map((level) => (
                   <SelectItem key={level} value={level}>
                     {t(`degreeLevel.${level}`)}
                   </SelectItem>
@@ -202,14 +315,29 @@ export default function Scholarships() {
                 <CardHeader>
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div className="flex flex-wrap gap-2">
-                      <Badge variant="secondary" className="text-xs">
-                        {t(`field.${scholarship.field}`)}
-                      </Badge>
-                      {scholarship.degreeLevel && (
-                        <Badge variant="outline" className="text-xs">
-                          {t(`degreeLevel.${scholarship.degreeLevel}`)}
-                        </Badge>
-                      )}
+                      {scholarship.field && 
+                        splitByCommas(scholarship.field).map((field, idx) => (
+                          <Badge key={idx} variant="secondary" className="text-xs">
+                            {t(`field.${field}`)}
+                          </Badge>
+                        ))
+                      }
+                      {scholarship.degreeLevel && 
+                        splitByCommas(scholarship.degreeLevel).map((level, idx) => (
+                          <Badge key={idx} variant="outline" className="text-xs">
+                            {t(`degreeLevel.${level}`)}
+                          </Badge>
+                        ))
+                      }
+                      {scholarship.destination && 
+                        splitByCommas(scholarship.destination[language] || scholarship.destination.en || scholarship.destination.ar || '')
+                          .map((dest, idx) => (
+                            <Badge key={idx} variant="outline" className="text-xs">
+                              <MapPin className="h-3 w-3 mr-1 inline" />
+                              {dest}
+                            </Badge>
+                          ))
+                      }
                     </div>
                     {isDeadlineSoon(scholarship.deadline) && (
                       <Badge variant="destructive" className="text-xs">
@@ -231,13 +359,6 @@ export default function Scholarships() {
                       <span className="font-medium">{t('scholarships.deadline')}:</span>
                       <span>{formatDeadline(scholarship.deadline)}</span>
                     </div>
-                    {scholarship.destination && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin className="h-4 w-4" />
-                        <span className="font-medium">{t('scholarships.destination')}:</span>
-                        <span>{scholarship.destination}</span>
-                      </div>
-                    )}
                   </div>
                 </CardContent>
                 <CardFooter>
@@ -261,3 +382,4 @@ export default function Scholarships() {
     </div>
   );
 }
+
