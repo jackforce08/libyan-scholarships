@@ -32,6 +32,13 @@ const translations = {
     'scholarships.all': 'All Fields',
     'scholarships.deadline': 'Deadline',
     'scholarships.field': 'Field',
+    'scholarships.degreeLevel': 'Degree Level',
+    'scholarships.filterDegreeLevel': 'Filter by Degree Level',
+    'scholarships.allDegreeLevels': 'All Degree Levels',
+    'scholarships.destination': 'Destination',
+    'scholarships.filterDestination': 'Filter by Destination',
+    'scholarships.allDestinations': 'All Destinations',
+    'scholarships.sortDestination': 'Destination (A-Z)',
     'scholarships.apply': 'Apply Now',
     'scholarships.noResults': 'No scholarships found matching your criteria',
     
@@ -45,6 +52,16 @@ const translations = {
     'field.technology': 'Technology',
     'field.law': 'Law',
     'field.education': 'Education',
+    
+    // Degree Levels
+    'degreeLevel.bachelor': 'Bachelor',
+    'degreeLevel.masters': 'Masters',
+    'degreeLevel.phd': 'PHD',
+    'degreeLevel.research': 'Research',
+    'degreeLevel.conference': 'Conference',
+    'degreeLevel.internship': 'Internship',
+    'degreeLevel.fellowship': 'Fellowship',
+    'degreeLevel.program': 'Program',
   },
   ar: {
     // Homepage
@@ -69,6 +86,13 @@ const translations = {
     'scholarships.all': 'جميع المجالات',
     'scholarships.deadline': 'الموعد النهائي',
     'scholarships.field': 'المجال',
+    'scholarships.degreeLevel': 'مستوى الدرجة',
+    'scholarships.filterDegreeLevel': 'تصفية حسب مستوى الدرجة',
+    'scholarships.allDegreeLevels': 'جميع مستويات الدرجة',
+    'scholarships.destination': 'الوجهة',
+    'scholarships.filterDestination': 'تصفية حسب الوجهة',
+    'scholarships.allDestinations': 'جميع الوجهات',
+    'scholarships.sortDestination': 'الوجهة (أ-ي)',
     'scholarships.apply': 'قدم الآن',
     'scholarships.noResults': 'لم يتم العثور على منح دراسية مطابقة لمعاييرك',
     
@@ -82,6 +106,16 @@ const translations = {
     'field.technology': 'التكنولوجيا',
     'field.law': 'القانون',
     'field.education': 'التعليم',
+    
+    // Degree Levels
+    'degreeLevel.bachelor': 'بكالوريوس',
+    'degreeLevel.masters': 'ماجستير',
+    'degreeLevel.phd': 'دكتوراه',
+    'degreeLevel.research': 'بحث',
+    'degreeLevel.conference': 'مؤتمر',
+    'degreeLevel.internship': 'تدريب',
+    'degreeLevel.fellowship': 'زمالة',
+    'degreeLevel.program': 'برنامج',
   },
 };
 

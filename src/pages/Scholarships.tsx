@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Filter, Calendar, ExternalLink, Loader2, Download } from 'lucide-react';
+import { Search, Filter, Calendar, ExternalLink, Loader2, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -8,14 +8,16 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useScholarships } from '@/hooks/useScholarships';
-import { Scholarship } from '@/data/scholarships';
-import { downloadScholarshipsAsCsv } from '@/utils/exportToCsv';
 
 export default function Scholarships() {
   const { t, language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedField, setSelectedField] = useState('all');
+  const [selectedDegreeLevel, setSelectedDegreeLevel] = useState('all');
+  const [selectedDestination, setSelectedDestination] = useState('all');
   const [sortBy, setSortBy] = useState('deadline');
+
+  const degreeLevels = ['bachelor', 'masters', 'phd', 'research', 'conference', 'internship', 'fellowship', 'program'];
 
   // Use the hook for scholarships data
   // To connect Google Sheets, pass: { googleSheetUrl: 'YOUR_GOOGLE_SHEET_URL' }
@@ -23,6 +25,15 @@ export default function Scholarships() {
   const { scholarships, loading, error } = useScholarships({
     googleSheetUrl: 'https://docs.google.com/spreadsheets/d/1Rbqr54bFO3kIr86YTtS_kkksmWLCZVbsh8jP8w7hQOw/export?format=csv'
   });
+
+  // Get unique destinations from scholarships data
+  const uniqueDestinations = useMemo(() => {
+    const destinations = scholarships
+      .map(s => s.destination)
+      .filter((d): d is string => !!d && d.trim() !== '')
+      .map(d => d.trim());
+    return Array.from(new Set(destinations)).sort();
+  }, [scholarships]);
 
 
   const fields = ['engineering', 'medicine', 'business', 'arts', 'science', 'technology', 'law', 'education', 'various'];
@@ -44,17 +55,35 @@ export default function Scholarships() {
       result = result.filter((scholarship) => scholarship.field === selectedField);
     }
 
+    // Filter by degree level
+    if (selectedDegreeLevel !== 'all') {
+      result = result.filter((scholarship) => 
+        scholarship.degreeLevel?.toLowerCase() === selectedDegreeLevel.toLowerCase()
+      );
+    }
+
+    // Filter by destination
+    if (selectedDestination !== 'all') {
+      result = result.filter((scholarship) => 
+        scholarship.destination?.trim().toLowerCase() === selectedDestination.toLowerCase()
+      );
+    }
+
     // Sort
     result.sort((a, b) => {
       if (sortBy === 'deadline') {
         return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+      } else if (sortBy === 'destination') {
+        const destA = a.destination?.trim().toLowerCase() || '';
+        const destB = b.destination?.trim().toLowerCase() || '';
+        return destA.localeCompare(destB);
       } else {
         return a.name[language].localeCompare(b.name[language]);
       }
     });
 
     return result;
-  }, [searchQuery, selectedField, sortBy, language, t]);
+  }, [scholarships, searchQuery, selectedField, selectedDegreeLevel, selectedDestination, sortBy, language, t]);
 
   const formatDeadline = (date: string) => {
     return new Date(date).toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', {
@@ -80,16 +109,6 @@ export default function Scholarships() {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             {t('home.subtitle')}
           </p>
-          <div className="flex justify-center mt-4">
-            <Button
-              variant="outline"
-              onClick={() => downloadScholarshipsAsCsv(scholarships, 'scholarships.csv')}
-              disabled={loading || scholarships.length === 0}
-            >
-              <Download className="mr-2 h-4 w-4" />
-              Export to CSV
-            </Button>
-          </div>
         </div>
 
         {/* Error Alert */}
@@ -112,7 +131,7 @@ export default function Scholarships() {
             />
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Select value={selectedField} onValueChange={setSelectedField}>
               <SelectTrigger className="h-12">
                 <Filter className="h-4 w-4 mr-2" />
@@ -128,6 +147,36 @@ export default function Scholarships() {
               </SelectContent>
             </Select>
 
+            <Select value={selectedDegreeLevel} onValueChange={setSelectedDegreeLevel}>
+              <SelectTrigger className="h-12">
+                <Filter className="h-4 w-4 mr-2" />
+                <SelectValue placeholder={t('scholarships.filterDegreeLevel')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('scholarships.allDegreeLevels')}</SelectItem>
+                {degreeLevels.map((level) => (
+                  <SelectItem key={level} value={level}>
+                    {t(`degreeLevel.${level}`)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={selectedDestination} onValueChange={setSelectedDestination}>
+              <SelectTrigger className="h-12">
+                <Filter className="h-4 w-4 mr-2" />
+                <SelectValue placeholder={t('scholarships.filterDestination')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('scholarships.allDestinations')}</SelectItem>
+                {uniqueDestinations.map((destination) => (
+                  <SelectItem key={destination} value={destination}>
+                    {destination}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger className="h-12">
                 <SelectValue placeholder={t('scholarships.sort')} />
@@ -135,6 +184,7 @@ export default function Scholarships() {
               <SelectContent>
                 <SelectItem value="deadline">{t('scholarships.sortDeadline')}</SelectItem>
                 <SelectItem value="name">{t('scholarships.sortName')}</SelectItem>
+                <SelectItem value="destination">{t('scholarships.sortDestination')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -151,9 +201,16 @@ export default function Scholarships() {
               <Card key={scholarship.id} className="flex flex-col hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <Badge variant="secondary" className="text-xs">
-                      {t(`field.${scholarship.field}`)}
-                    </Badge>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="secondary" className="text-xs">
+                        {t(`field.${scholarship.field}`)}
+                      </Badge>
+                      {scholarship.degreeLevel && (
+                        <Badge variant="outline" className="text-xs">
+                          {t(`degreeLevel.${scholarship.degreeLevel}`)}
+                        </Badge>
+                      )}
+                    </div>
                     {isDeadlineSoon(scholarship.deadline) && (
                       <Badge variant="destructive" className="text-xs">
                         {t('scholarships.deadline')}
@@ -168,10 +225,19 @@ export default function Scholarships() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex-grow">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    <span className="font-medium">{t('scholarships.deadline')}:</span>
-                    <span>{formatDeadline(scholarship.deadline)}</span>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Calendar className="h-4 w-4" />
+                      <span className="font-medium">{t('scholarships.deadline')}:</span>
+                      <span>{formatDeadline(scholarship.deadline)}</span>
+                    </div>
+                    {scholarship.destination && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <MapPin className="h-4 w-4" />
+                        <span className="font-medium">{t('scholarships.destination')}:</span>
+                        <span>{scholarship.destination}</span>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
                 <CardFooter>

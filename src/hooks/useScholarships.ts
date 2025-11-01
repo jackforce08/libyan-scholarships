@@ -12,7 +12,8 @@ interface UseScholarshipsOptions {
 
 export function useScholarships(options?: UseScholarshipsOptions) {
   const [scholarships, setScholarships] = useState<Scholarship[]>(localScholarships);
-  const [loading, setLoading] = useState(false);
+  // Start with loading=true if we have a URL to fetch from
+  const [loading, setLoading] = useState(!!(options?.googleSheetUrl || options?.airtableConfig));
   const [error, setError] = useState<string | null>(null);
 
   // --- CSV support helpers (for sheets published as CSV) ---
@@ -145,6 +146,37 @@ export function useScholarships(options?: UseScholarshipsOptions) {
           return '';
         };
 
+        // Normalize degree level value to lowercase for consistency
+        // Map common variations to standard values
+        const degreeLevelValue = pick(['degree_level', 'degreelevel', 'level', 'degree', 'program_level', 'level_of_study']);
+        let normalizedDegreeLevel: string | undefined = undefined;
+        if (degreeLevelValue) {
+          const lowerValue = degreeLevelValue.toLowerCase().trim();
+          // Map common variations to standard degree level keys
+          const degreeLevelMap: Record<string, string> = {
+            'bachelor': 'bachelor',
+            'bachelors': 'bachelor',
+            'undergraduate': 'bachelor',
+            'masters': 'masters',
+            'master': 'masters',
+            'ms': 'masters',
+            'm.sc': 'masters',
+            'phd': 'phd',
+            'ph.d': 'phd',
+            'ph.d.': 'phd',
+            'doctorate': 'phd',
+            'doctoral': 'phd',
+            'research': 'research',
+            'conference': 'conference',
+            'confrence': 'conference', // Handle user's spelling variant
+            'internship': 'internship',
+            'fellowship': 'fellowship',
+            'program': 'program',
+            'programme': 'program'
+          };
+          normalizedDegreeLevel = degreeLevelMap[lowerValue] || lowerValue;
+        }
+
         return {
           id: pick(['id', 'identifier', 'scholarship_id']) || `csv-${idx + 1}`,
           name: {
@@ -152,6 +184,8 @@ export function useScholarships(options?: UseScholarshipsOptions) {
             ar: pick(['name_ar', 'name_(ar)', 'name_ar', 'title_ar']) || ''
           },
           field: (pick(['field', 'category', 'discipline', 'subject', 'area']) || 'general').toLowerCase(),
+          degreeLevel: normalizedDegreeLevel,
+          destination: pick(['destination', 'country', 'location', 'destination_country', 'study_destination', 'where'])?.trim(),
           deadline: pick(['deadline', 'due_date', 'due_date', 'application_deadline', 'closing_date']) || '',
           applyUrl: pick(['apply_url', 'applyurl', 'apply', 'url', 'link', 'application_url', 'apply_link']) || '',
           description: {
@@ -223,21 +257,26 @@ export function useScholarships(options?: UseScholarshipsOptions) {
       const rows = data.table.rows;
 
       // Transform Google Sheets data to Scholarship format
-      // Expected columns: ID, Name (EN), Name (AR), Field, Deadline, Apply URL, Description (EN), Description (AR)
-      const transformed: Scholarship[] = rows.map((row: any, idx: number) => ({
-        id: row.c[0]?.v?.toString() || `gs-${idx + 1}`,
-        name: {
-          en: row.c[1]?.v || '',
-          ar: row.c[2]?.v || ''
-        },
-        field: (row.c[3]?.v || 'general').toLowerCase(),
-        deadline: row.c[4]?.v || '',
-        applyUrl: row.c[5]?.v || '',
-        description: {
-          en: row.c[6]?.v || '',
-          ar: row.c[7]?.v || ''
-        }
-      }));
+      // Expected columns: ID, Name (EN), Name (AR), Field, Degree Level, Destination, Deadline, Apply URL, Description (EN), Description (AR)
+      const transformed: Scholarship[] = rows.map((row: any, idx: number) => {
+        const degreeLevelValue = row.c[4]?.v;
+        return {
+          id: row.c[0]?.v?.toString() || `gs-${idx + 1}`,
+          name: {
+            en: row.c[1]?.v || '',
+            ar: row.c[2]?.v || ''
+          },
+          field: (row.c[3]?.v || 'general').toLowerCase(),
+          degreeLevel: degreeLevelValue ? degreeLevelValue.toString().toLowerCase().trim() : undefined,
+          destination: row.c[5]?.v?.toString().trim() || undefined,
+          deadline: row.c[6]?.v || '',
+          applyUrl: row.c[7]?.v || '',
+          description: {
+            en: row.c[8]?.v || '',
+            ar: row.c[9]?.v || ''
+          }
+        };
+      });
 
       setScholarships(transformed);
     } catch (err: any) {
@@ -292,21 +331,27 @@ export function useScholarships(options?: UseScholarshipsOptions) {
       const data = await response.json();
       
       // Transform Airtable data to Scholarship format
-      // Expected fields: ID, NameEN, NameAR, Field, Deadline, ApplyURL, DescriptionEN, DescriptionAR
-      const transformed: Scholarship[] = data.records.map((record: any) => ({
-        id: record.id,
-        name: {
-          en: record.fields.NameEN || '',
-          ar: record.fields.NameAR || ''
-        },
-        field: (record.fields.Field || 'general').toLowerCase(),
-        deadline: record.fields.Deadline || '',
-        applyUrl: record.fields.ApplyURL || '',
-        description: {
-          en: record.fields.DescriptionEN || '',
-          ar: record.fields.DescriptionAR || ''
-        }
-      }));
+      // Expected fields: ID, NameEN, NameAR, Field, DegreeLevel, Destination, Deadline, ApplyURL, DescriptionEN, DescriptionAR
+      const transformed: Scholarship[] = data.records.map((record: any) => {
+        const degreeLevelValue = record.fields.DegreeLevel || record.fields.Degree_Level || record.fields.Level;
+        const destinationValue = record.fields.Destination || record.fields.Country || record.fields.Location;
+        return {
+          id: record.id,
+          name: {
+            en: record.fields.NameEN || '',
+            ar: record.fields.NameAR || ''
+          },
+          field: (record.fields.Field || 'general').toLowerCase(),
+          degreeLevel: degreeLevelValue ? degreeLevelValue.toString().toLowerCase().trim() : undefined,
+          destination: destinationValue ? destinationValue.toString().trim() : undefined,
+          deadline: record.fields.Deadline || '',
+          applyUrl: record.fields.ApplyURL || '',
+          description: {
+            en: record.fields.DescriptionEN || '',
+            ar: record.fields.DescriptionAR || ''
+          }
+        };
+      });
 
       setScholarships(transformed);
     } catch (err) {
