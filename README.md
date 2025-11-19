@@ -1,3 +1,6 @@
+
+https://jackforce08.github.io/libyan-scholarships/
+
 Libya Scholarships Portal
 
 A website that helps Libyan students easily find scholarships, fellowships, programs, and funding opportunities around the world — all in one platform.
