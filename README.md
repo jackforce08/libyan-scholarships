@@ -1,35 +1,42 @@
+# 🇱🇾 Libyan Scholarships Portal
 
-https://jackforce08.github.io/libyan-scholarships/
+A modern, bilingual scholarships discovery platform built with **React + TypeScript**, designed to help Libyan students access local and international educational opportunities.
 
-Libya Scholarships Portal
+🔗 **Live Website:** [https://jackforce08.github.io/libyan-scholarships/](https://jackforce08.github.io/libyan-scholarships/)
 
-A website that helps Libyan students easily find scholarships, fellowships, programs, and funding opportunities around the world — all in one platform.
+---
 
-Why this exists
+## ✨ Key Features
 
-Scholarship information for Libyans is usually spread across Facebook posts, Telegram channels, random groups, or word-of-mouth.
-This portal organizes everything into one easy, clean, searchable website.
+* 🔍 Filter scholarships by field, country, and deadline
+* 🌐 Arabic / English language support
+* 🌓 Dark & light mode
+* 📡 Live data integration via private Google Sheets / Airtable
+* ⚡ Fast, responsive UI with modern tooling
 
-Features
+---
 
-Shows all scholarships clearly in a table
+## 🛠️ Tech Stack
 
-Sort by deadline
+* React + TypeScript
+* Vite
+* Tailwind CSS & shadcn/ui
+* React Router (HashRouter)
+* GitHub Actions & GitHub Pages
 
-Filter by field / major
+---
 
-Arabic language UI toggle
+## 🎓 Academic & Technical Value
 
-Mobile responsive UI
+This project demonstrates real-world front-end engineering skills, including system design, multilingual UI development, live data handling, and responsible AI-assisted development.
 
-Dark mode toggle
+---
 
-Data sourced from a connected Google Sheet / Airtable (live updates)
+## 👤 Author
 
-Tech Stack
+**Jack Force**
+GitHub: [https://github.com/jackforce08](https://github.com/jackforce08)
 
-HTML + CSS + JavaScript
+---
 
-GitHub Pages hosting
-
-Google Sheets / Airtable → fetched as live data source
+**Built to improve access to education for Libyan students 🇱🇾**
