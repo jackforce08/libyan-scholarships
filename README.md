@@ -1,5 +1,5 @@
 # 🇱🇾 Libyan Scholarships Portal
-
+(AI CODED)
 A modern, bilingual scholarships discovery platform built with **React + TypeScript**, designed to help Libyan students access local and international educational opportunities.
 
 🔗 **Live Website:** [https://jackforce08.github.io/libyan-scholarships/](https://jackforce08.github.io/libyan-scholarships/)
