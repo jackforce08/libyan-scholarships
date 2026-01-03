@@ -24,7 +24,6 @@ export default function Scholarships() {
   url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQZ6MjGQXkE92eznxXdYHzWB5Ajpw1oNgehW4cfD4NeBsD0pvGo7MgfbTUlPM5nLNK4QTm_5WHiXI1a/pub?gid=1129332444&single=true&output=csv",
 });
 
-
   // Helper function to split by both English and Arabic commas
   const splitByCommas = (text: string): string[] => {
     // Split by both English comma (,) and Arabic comma (،)
