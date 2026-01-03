@@ -20,9 +20,15 @@ export default function Scholarships() {
   // Use the hook for scholarships data
   // To connect Google Sheets, pass: { googleSheetUrl: 'YOUR_GOOGLE_SHEET_URL' }
   // To connect Airtable, pass: { airtableConfig: { baseId: 'BASE_ID', tableId: 'TABLE_ID', apiKey: 'API_KEY' } }
+<<<<<<< HEAD
  const { scholarships, loading, error } = useScholarships({
   url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQZ6MjGQXkE92eznxXdYHzWB5Ajpw1oNgehW4cfD4NeBsD0pvGo7MgfbTUlPM5nLNK4QTm_5WHiXI1a/pub?gid=1129332444&single=true&output=csv",
 });
+=======
+  const { scholarships, loading, error } = useScholarships({
+    googleSheetUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZ6MjGQXkE92eznxXdYHzWB5Ajpw1oNgehW4cfD4NeBsD0pvGo7MgfbTUlPM5nLNK4QTm_5WHiXI1a/pub?gid=1129332444&single=true&output=csv'
+  });
+>>>>>>> 63136dd (should work now ahhhh)
 
   // Helper function to split by both English and Arabic commas
   const splitByCommas = (text: string): string[] => {
@@ -382,4 +388,3 @@ export default function Scholarships() {
     </div>
   );
 }
-
