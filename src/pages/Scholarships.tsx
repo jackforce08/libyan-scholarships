@@ -21,7 +21,7 @@ export default function Scholarships() {
   // To connect Google Sheets, pass: { googleSheetUrl: 'YOUR_GOOGLE_SHEET_URL' }
   // To connect Airtable, pass: { airtableConfig: { baseId: 'BASE_ID', tableId: 'TABLE_ID', apiKey: 'API_KEY' } }
   const { scholarships, loading, error } = useScholarships({
-    googleSheetUrl: 'https://docs.google.com/spreadsheets/d/1Rbqr54bFO3kIr86YTtS_kkksmWLCZVbsh8jP8w7hQOw/export?format=csv'
+    https://docs.google.com/spreadsheets/d/e/2PACX-1vQZ6MjGQXkE92eznxXdYHzWB5Ajpw1oNgehW4cfD4NeBsD0pvGo7MgfbTUlPM5nLNK4QTm_5WHiXI1a/pub?gid=422104067&single=true&output=csv'
   });
 
   // Helper function to split by both English and Arabic commas
