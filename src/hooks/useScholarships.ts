@@ -180,12 +180,14 @@ export function useScholarships(options?: UseScholarshipsOptions) {
         return {
           id: pick(['id', 'identifier', 'scholarship_id']) || `csv-${idx + 1}`,
           name: {
-            en: pick(['name_en', 'name_(en)', 'name_en', 'name', 'title_en', 'title']) || '',
-            ar: pick(['name_ar', 'name_(ar)', 'name_ar', 'title_ar']) || ''
+            // Handle formats: "name(EN)" -> "nameen", "name (EN)" -> "name_en", "name_en"
+            en: pick(['name_en', 'nameen', 'name_(en)', 'name', 'title_en', 'title']) || '',
+            ar: pick(['name_ar', 'namear', 'name_(ar)', 'title_ar']) || ''
           },
           field: (pick(['field', 'category', 'discipline', 'subject', 'area']) || 'general').toLowerCase(),
           degreeLevel: normalizedDegreeLevel,
           // Get destination in both languages
+          // Handle both formats: "destination(en)" -> "destinationen" and "destination (en)" -> "destination_en"
           destination: (() => {
             const destEn = pick(['destination_en', 'destinationen'])?.trim();
             const destAr = pick(['destination_ar', 'destinationar'])?.trim();
@@ -205,10 +207,12 @@ export function useScholarships(options?: UseScholarshipsOptions) {
             return undefined;
           })(),
           deadline: pick(['deadline', 'due_date', 'due_date', 'application_deadline', 'closing_date']) || '',
+          // Handle formats: "apply URL" -> "apply_url" or "applyurl"
           applyUrl: pick(['apply_url', 'applyurl', 'apply', 'url', 'link', 'application_url', 'apply_link']) || '',
           description: {
-            en: pick(['description_en', 'description_(en)', 'description_en', 'description', 'desc_en']) || '',
-            ar: pick(['description_ar', 'description_(ar)', 'description_ar', 'desc_ar']) || ''
+            // Handle formats: "description(EN)" -> "descriptionen", "description (EN)" -> "description_en"
+            en: pick(['description_en', 'descriptionen', 'description_(en)', 'description', 'desc_en']) || '',
+            ar: pick(['description_ar', 'descriptionar', 'description_(ar)', 'desc_ar']) || ''
           }
         } as Scholarship;
       }).filter((scholarship) => {

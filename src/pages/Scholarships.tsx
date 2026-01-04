@@ -30,10 +30,23 @@ export default function Scholarships() {
   });
 >>>>>>> 63136dd (should work now ahhhh)
 
-  // Helper function to split by both English and Arabic commas
+  // Helper function to split by both English and Arabic commas, and "and"/"و"
   const splitByCommas = (text: string): string[] => {
-    // Split by both English comma (,) and Arabic comma (،)
-    return text.split(/[,،]/).map(d => d.trim()).filter(d => d !== '');
+    // First split by " and " (with spaces) and Arabic " و " (with or without spaces)
+    // Then split by commas, and flatten the result
+    const parts: string[] = [];
+    
+    // Split by " and " or Arabic " و " (with optional spaces around it)
+    // Arabic "و" can appear with or without spaces: "لبنان ومصر" or "لبنان و مصر"
+    const andSplit = text.split(/\s+and\s+|\s+و\s*|\s*و\s+/i);
+    
+    // Then split each part by commas
+    andSplit.forEach(part => {
+      const commaSplit = part.split(/[,،]/);
+      parts.push(...commaSplit);
+    });
+    
+    return parts.map(d => d.trim()).filter(d => d !== '');
   };
 
   // Get unique destinations from scholarships data
